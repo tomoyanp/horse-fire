@@ -1,6 +1,7 @@
 from keras.optimizers import Adam
 import tensorflow as tf
 import numpy as np
+import pandas
 
 
 # パーセプトロンの数
@@ -8,11 +9,32 @@ N = 4  # 入力層の数
 K = 20  # 隠れ層の数
 M = 2  # 出力層の数
 
+
+data = pandas.read_csv("std_race_data.csv")
+training_data = data.loc[:, ["race_id", "horse_age" ,"weight", "hourse_weight", "weight_change"]]
+np_array = training_data.values
+mp = {}
+for r in np_array:
+  if r[0] in mp:
+    mp[r[0]].append(r[1:5])
+  else:
+    mp[r[0]] = []
+    mp[r[0]].append(r[1:5])
+
+training_data = []
+for key in mp.keys():
+    training_data.append(mp[key])
+
+trainingList = np.array(training_data)
+
+# mp[race_id] = [race1, race2, race3]
+# mp.keys() -> race_idの一覧取得
+
 # 入力データ
 # 学習データ(名前,騎手,会場など)
 # 教師データ(オッズ)
-trainingList = np.array([[-0.3712348946887113, -0.18229082941864605, 0.4671866368196286, 1.0191835363608703],
-                         [-0.3712348946887113, 0.8280348892713083, 1.6774307432691, -0.24170990967613754]])
+# trainingList = np.array([[-0.3712348946887113, -0.18229082941864605, 0.4671866368196286, 1.0191835363608703],
+#                          [-0.3712348946887113, 0.8280348892713083, 1.6774307432691, -0.24170990967613754]])
 
 testingList = np.array([[-0.6879920980515413, -0.6194127660107818],
                        [-0.6358752736489328, -0.5028242358046408]])
