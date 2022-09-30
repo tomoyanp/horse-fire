@@ -13,7 +13,7 @@ def getDriver():
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument("--no-sandbox")
-    driver = webdriver.Chrome('/usr/bin/chromedriver', options=options)
+    driver = webdriver.Chrome('/usr/local/bin/chromedriver', options=options)
     return driver
 
 f = open("race_id_list.csv", "r")
@@ -26,21 +26,24 @@ for url in url_list:
         driver = getDriver()
         driver.get(replaced_url)
         time.sleep(3)
-        table = driver.find_element_by_name("Ninki")
-        print(table)
+        # table = driver.find_element_by_name("Ninki")
+        isExist = WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.ID, 'Ninki')))
+        if isExist:
+            pageSource = driver.page_source
+            print(pageSource)
         # req = requests.get(replaced_url)
-        # result = BeautifulSoup(req.text, "html.parser")
+            result = BeautifulSoup(pageSource, "html.parser")
         # print(result)
         # write_file.write(result.text)
-        # table = result.find("table", {"id": "Ninki"})
-        # trs = table.findAll("tr")
-        # for tr in trs:
-        #     tds = tr.findAll("td")
-        #     if (len(tds) > 0):
-        #         name = tds[4].find("a").text
-        #         odds = tds[5].find("span").text
-        #         prize_odds = tds[6].find("span").text
-        #         prize_odds_from = prize_odds.split("-")[0].strip()
-        #         prize_odds_to = prize_odds.split("-")[1].strip()
-        #         # print("%s, %s, %s, %s" % (name, odds, prize_odds_from, prize_odds_to))
+            table = result.find("table", {"id": "Ninki"})
+            trs = table.findAll("tr")
+            for tr in trs:
+                tds = tr.findAll("td")
+                if (len(tds) > 0):
+                    name = tds[4].find("a").text
+                    odds = tds[5].find("span").text
+                    prize_odds = tds[6].find("span").text
+                    prize_odds_from = prize_odds.split("-")[0].strip()
+                    prize_odds_to = prize_odds.split("-")[1].strip()
+                    print("%s, %s, %s, %s" % (name, odds, prize_odds_from, prize_odds_to))
 
