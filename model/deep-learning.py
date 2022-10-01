@@ -11,24 +11,25 @@ M = 2  # 出力層の数
 
 
 data = pandas.read_csv("std_race_data.csv")
-training_data = data.loc[:, ["race_id", "horse_age" ,"weight", "hourse_weight", "weight_change"]]
+training_data = data.loc[:, ["race_id", "horse_age",
+                             "weight", "hourse_weight", "weight_change"]]
 np_array = training_data.values
+
 mp = {}
 for r in np_array:
-  if r[0] in mp:
-    mp[r[0]].append(r[1:5])
-  else:
-    mp[r[0]] = []
-    mp[r[0]].append(r[1:5])
+    if r[0] in mp:
+        mp[r[0]].append(r[1:5].tolist())
+    else:
+        mp[r[0]] = []
+        mp[r[0]].append(r[1:5].tolist())
 
 training_data = []
 for key in mp.keys():
     training_data.append(mp[key])
 
-trainingList = np.array(training_data)
-
-# mp[race_id] = [race1, race2, race3]
-# mp.keys() -> race_idの一覧取得
+# trainingList = np.array(training_data, dtype=float64)
+d = pandas.DataFrame(training_data)
+trainingList = d.values
 
 # 入力データ
 # 学習データ(名前,騎手,会場など)
@@ -42,9 +43,10 @@ testingList = np.array([[-0.6879920980515413, -0.6194127660107818],
 testingList2 = np.array(
     [[-0.3712348946887113, 0.8280348892713083, -0.27240698378838185, -0.24170990967613754]])
 
+
 # 3層ニューラルネットワークの構築
 model = tf.keras.Sequential()
-model.add(tf.keras.Input(shape=(N,)))
+model.add(tf.keras.Input(shape=(N, 3)))
 model.add(tf.keras.layers.Dense(K, activation='tanh'))
 model.add(tf.keras.layers.Dense(M, activation='softmax'))
 
