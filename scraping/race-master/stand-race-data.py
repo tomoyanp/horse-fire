@@ -2,6 +2,9 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
 
+#2022.10.12
+#もう利用してへん
+
 #Pandasに全行読み込み&カラム指定
 raceData = pd.read_csv("race_data.csv").values.tolist()
 dfRaceData = pd.DataFrame(raceData,columns=['race_id','goal_order','start_number','horse_name','horse_age','weight','jockey_id','single_odds','hourse_weight','weight_change','multi_odds'])
