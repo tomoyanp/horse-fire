@@ -56,7 +56,11 @@ def normalize(horseList):
     npArry = np.array(horseList,dtype='object')
     #標準化対象：horse_age,single_odds,hourse_weight,weight_change,multi_odds
     for y in 4,5,7,8,9,10:
-        std = (npArry[:,y] - np.mean(npArry[:,y]) ) / np.std(npArry[:,y])
+        #標準偏差が1の場合はとりあえず1で除算（全頭同じ年齢の場合に発生する：そもそも年齢は標準化しなくてもいいかも）
+        if np.std(npArry[:,y]) == 0:
+            std = npArry[:,y] - np.mean(npArry[:,y])
+        else:
+            std = (npArry[:,y] - np.mean(npArry[:,y]) ) / np.std(npArry[:,y])
         #標準化された1次元配列を追加する
         npArry = np.column_stack([npArry,std])
     return npArry

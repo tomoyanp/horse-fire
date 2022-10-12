@@ -1,11 +1,8 @@
 # coding: utf-8
-import re
-
 import csv
 import sys
 import os
 import traceback
-import json
 import time
 from datetime import datetime,timedelta
 
@@ -18,11 +15,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 import chromedriver_binary
 
-import requests
-
-# 実行スクリプトのパスを取得して、追加
-current_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(current_path)
 
 dt_now = datetime.now()
 
@@ -56,9 +48,7 @@ def getRaceIdList(pageSource):
     
     soup = bs4.BeautifulSoup(pageSource, features='lxml')
     try:
-
         raceIdList = []
-
         elem_base = soup.find(id="RaceTopRace")
         if elem_base:
             # RaceList_DataItemのli tag 全部取得
@@ -96,18 +86,13 @@ if __name__ == '__main__':
     # Chrome Driverを取得
     googleDriver = getDriver()
 
-    # 
     raceLists = []
-
     for i in range((endDate - startDate).days):
-
         #開催日対象日付(YYYMMDD)
         targetDate = (startDate + timedelta(i)).strftime('%Y%m%d')
-
         #対象URLから開催一覧の取得
         targetURL = BASE_RACEDATE_URL+'kaisai_date='+targetDate
         print("開催日付のURL:"+targetURL)
-
         #対象日付にレース開催があったのか確認
         pageSource = getTopPage(googleDriver,targetURL)
         if pageSource is None:
@@ -115,11 +100,14 @@ if __name__ == '__main__':
         else:
             #対象日付にレースが開催されていれば対象ページのレースIDを全て出力
             raceLists.append(getRaceIdList(pageSource))
-            
-    with open('race_id_list.csv', 'w') as file:
-        for raceList in raceLists:
-            for raceId in raceList:
-                file.write("%s\n" % raceId)
+
+    #Chrome Driverは絶対殺すマン
     googleDriver.quit()
-    
+
+    if len(raceLists) != 0:
+        with open('race_id_list.csv', 'w') as file:
+            for raceList in raceLists:
+                for raceId in raceList:
+                    file.write("%s\n" % raceId)
+
     print("End TIme :"+dt_now.strftime('%Y年%m月%d日 %H:%M:%S')) 
