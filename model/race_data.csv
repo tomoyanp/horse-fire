@@ -1,4 +1,4 @@
-﻿race_id,goal_order, start_number, horse_name, horse_age, weight,jockey_id,single_odds,hourse_weight,weight_chang,multiOdds,Nhorse_age,Nhorse_weight,Nsingle_odds,Nhourse_weight,Nweight_change,Nmulti_odds,e
+﻿race_id,goal_order, start_number, horse_name, horse_age, weight,jockey_id,single_odds,hourse_weight,weight_chang,multiOdds,Nhorse_age,Nhorse_weight,Nsingle_odds,Nhourse_weight,Nweight_change,Nmulti_odds
 202203020101,1,6,バルンストック,5.0,57.0,01196,3.8,474.0,-10.0,1.7,-0.37947331922020583,-3.1622776601683786,-0.6433079341493043,0.29083429059274507,-0.3177851989552769,-0.6163652362092605
 202203020101,2,10,アポロファントム,5.0,60.0,00727,18.9,452.0,-4.0,6.0,-0.37947331922020583,0.3162277660168387,-0.3670580689419635,-1.0626637540888704,0.3813422387463322,-0.30472359352943135
 202203020101,3,8,ドラウプニル,6.0,60.0,01149,4.7,488.0,8.0,1.85,0.31622776601683766,0.3162277660168387,-0.6268427103952243,1.1521512281174096,1.7795971141495506,-0.6054940161157781
