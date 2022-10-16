@@ -72,7 +72,9 @@ if __name__ == '__main__':
 
     #レース情報を出力するファイル
     raceData = open("race_data.csv", "w", encoding="utf_8_sig")
-    raceData.write("race_id,goal_order, start_number, horse_name, horse_age, weight,jockey_id,single_odds,hourse_weight,weight_chang,multiOdds,Nhorse_age,Nhorse_weight,Nsingle_odds,Nhourse_weight,Nweight_change,Nmulti_odds,e\n")
+    raceData.write("race_id,goal_order, start_number, horse_name, horse_age, weight,jockey_id,single_odds,hourse_weight,weight_chang,multiOdds,isThird,isSecond,Nhorse_age,Nhorse_weight,Nsingle_odds,Nhourse_weight,Nweight_change,Nmulti_odds\n")
+    #2行目以降は配列を出力するのでcsv.write利用する
+    raceWriter = csv.writer(raceData)
 
     #Chrome Driver
     googleDriver = getDriver()
@@ -112,19 +114,26 @@ if __name__ == '__main__':
                     horse.append(float(tds[14].text.split("(")[0].strip()))     #hourse_weight(標準化対象)
                     horse.append(float(tds[14].text.split("(")[1].strip().rstrip(")"))) #weight_change(標準化対象)
                     horse.append(float(odds_obj[tds[3].text.strip()]))                  #multi_odds (HorsenameがKey)(標準化対象)
+                    if tds[0].text.strip() in ['1','2','3']:        #isThird
+                        horse.append('1')
+                    else:
+                        horse.append('0')
+                    if tds[0].text.strip() in ['1','2']:            #isSecond
+                        horse.append('1')
+                    else:
+                        horse.append('0')
                     horseList.append(horse)
-        #レースID単位で標準化
+        #レースID単位で標準化&カラム追加
         normalizedHorseList= normalize(horseList)
         try:
-            writer = csv.writer(raceData)
-            writer.writerows(normalizedHorseList)
+            raceWriter.writerows(normalizedHorseList)
 #           raceData.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (race_id,goal_order, start_number, horse_name, horse_age, weight,jockey_id,single_odds,hourse_weight,weight_change,) )
         except Exception as e:
             print(e)
-
         time.sleep(2)
 
     #Chrome Driverは絶対殺すマン
     googleDriver.quit()
     raceData.close()
     urlList.close()
+    
