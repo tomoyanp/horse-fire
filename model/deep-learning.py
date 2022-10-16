@@ -11,13 +11,12 @@ K = 20  # 隠れ層の数
 M = 2  # 出力層の数
 
 
-data = pandas.read_csv("std_race_data.csv")
+data = pandas.read_csv("race_data.csv")
 
 # カラム指定の上列抽出
 # この時点では
 # rade_id, horse_age, weight...の行列
-training_data = data.loc[:, ["race_id", "horse_age",
-                             "weight", "hourse_weight", "weight_change", "single_odds", "multi_odds"]]
+training_data = data.loc[:, ["race_id", " horse_age"," weight", "hourse_weight", "weight_chang", "single_odds", "multiOdds"]]
 np_array = training_data.values
 
 # mapにばらして、race_idごとに分けていく
