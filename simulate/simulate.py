@@ -4,13 +4,12 @@ import pandas
 data = pandas.read_csv("../model/race_data.csv")
 df = data.loc[:, ["race_id", "goal_order", " start_number", "single_odds", "multiOdds"]]
 
-amount = 1000
-
 # 引数にrace_idと馬三頭を渡すと、3連複を買ったものとして結果を返してくれる
 # 三連複オッズは計算が怠いので、疑似的に複勝1*複勝2*複勝3とする
-# 掛け金はとりあえずシンプルに100円とする
+# 掛け金はとりあえずシンプルに1000円とする
 # 結果は下記を配列にしたもの
 # [raceID, 選んだ3頭, 実際の3頭, 払い戻し額]
+amount = 1000
 def simulate(race_id, expect):
     race_data = df[df.race_id==race_id]
     actual = []
