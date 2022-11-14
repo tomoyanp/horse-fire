@@ -13,7 +13,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
-import chromedriver_binary
+import jpholiday
 
 
 dt_now = datetime.now()
@@ -60,7 +60,10 @@ def getRaceIdList(pageSource):
                     # hrefタグのうち、レースIDのURLを取得
                     href = a_tag.attrs['href']
                     if ('result.html' in href):
-                        raceIdList.append(BASE_RACE_URL+href.strip('.'))
+                        url = "%s%s" % (BASE_RACE_URL, href.strip('.'))
+                        raceId = href.split("race_id=")[1].split("&rf")[0]
+                        raceName = elem.find("span", class_="ItemTitle").text
+                        raceIdList.append("%s,%s,%s" % (url, raceId, raceName))
         return raceIdList
 
     except Exception as e:
@@ -89,17 +92,19 @@ if __name__ == '__main__':
     raceLists = []
     for i in range((endDate - startDate).days):
         #開催日対象日付(YYYMMDD)
-        targetDate = (startDate + timedelta(i)).strftime('%Y%m%d')
-        #対象URLから開催一覧の取得
-        targetURL = BASE_RACEDATE_URL+'kaisai_date='+targetDate
-        print("開催日付のURL:"+targetURL)
-        #対象日付にレース開催があったのか確認
-        pageSource = getTopPage(googleDriver,targetURL)
-        if pageSource is None:
-            print("対象日付に開催レースはありません")
-        else:
-            #対象日付にレースが開催されていれば対象ページのレースIDを全て出力
-            raceLists.append(getRaceIdList(pageSource))
+        targetDate = startDate + timedelta(i)
+        if targetDate.weekday() >= 5 or jpholiday.is_holiday(targetDate):
+            targetDateStr = targetDate.strftime('%Y%m%d')
+            #対象URLから開催一覧の取得
+            targetURL = BASE_RACEDATE_URL+'kaisai_date='+targetDateStr
+            print("開催日付のURL:"+targetURL)
+            #対象日付にレース開催があったのか確認
+            pageSource = getTopPage(googleDriver,targetURL)
+            if pageSource is None:
+                print("対象日付に開催レースはありません")
+            else:
+                #対象日付にレースが開催されていれば対象ページのレースIDを全て出力
+                raceLists.append(getRaceIdList(pageSource))
 
     #Chrome Driverは絶対殺すマン
     googleDriver.quit()
