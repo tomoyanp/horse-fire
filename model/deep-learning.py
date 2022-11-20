@@ -11,18 +11,18 @@ import lightgbm as lgb
 data = pandas.read_csv("race_data.csv")
 
 # カラム指定の上列抽出
+# Nhorse_age, Nhorse_weight, Nweight_changeが説明変数。isThird, isSecondが目的変数(正解ラベル)
 specific_data = data.loc[:, ["race_id", "Nhorse_age",
                              "Nhorse_weight", "Nweight_change", "isThird", "isSecond"]]
 converted_np_array = specific_data.values
 
-# データの正規化
+#################### データの正規化 ####################
 # mapにばらして、race_idごとに分けていく
 # つまり
 # mp[race_id_no1] = [
 #   [1,2,3,4,5,6],
 #   [1,2,3,4,5,6],
 # ]
-# {202203020101:[[0.3, -3, -0.3],[0.2, 0.3, 0.3]], 202203020102:[[0.2,1,1]]}
 # みたいなデータが出来る
 x_mp = {}  # 説明変数
 y_mp = {}  # 目的変数
@@ -36,14 +36,12 @@ for r in converted_np_array:
         x_mp[r[0]].append(r[1:4].tolist())
         y_mp[r[0]].append(r[4:6].tolist())
 
-# データの正規化
 x_tmp = []
 y_tmp = []
 for key in x_mp.keys():
     x_tmp.append(x_mp[key])
     y_tmp.append(y_mp[key])
 # ちょい怠いので一旦16頭建てのレース以外排除する
-#  [[[[0.3, -3, -0.3],[0.2, 0.3, 0.3]]]]
 
 x_data = []  # 説明変数
 y_data = []  # 目的変数
@@ -58,10 +56,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     x_data, y_data, random_state=0, test_size=0.3)
 
 # 学習データを、学習用と検証用に分ける
-x_train, x_eval, y_train, y_eval = train_test_split(x_train, y_train, test_size=0.2, random_state=1,
-                                                    # stratify=y_train
-                                                    )
-
+x_train, x_eval, y_train, y_eval = train_test_split(
+    x_train, y_train, test_size=0.2, random_state=1)
 
 # 2次元に変換する
 converted_x_train = sum(x_train, [])
@@ -82,6 +78,11 @@ xgb_eval = xgb.DMatrix(converted_x_eval, label=converted_y_eval)
 # テスト用
 xgb_test = xgb.DMatrix(converted_x_test, label=converted_y_test)
 
+
+#################### データの正規化 ####################
+
+
+#################### デバック ####################
 # クラスの比率
 r_isThird, r_not_isThird = len(specific_data["isThird"] == 1), len(
     specific_data["isThird"] == 0)
@@ -89,9 +90,10 @@ r_all = r_isThird + r_not_isThird
 print('3着以内 の割合 :', r_isThird/r_all)
 print('3着より下 の割合 :', r_not_isThird/r_all)
 print(r_all)
+#################### デバック ####################
 
 
-# モデルの学習
+#################### モデルの学習 ####################
 
 model = lgb.LGBMClassifier()  # モデルのインスタンスの作成
 xgb_params = {
@@ -107,5 +109,10 @@ bst = xgb.train(xgb_params,
 y_pred_proba = bst.predict(xgb_test)
 y_pred = np.where(y_pred_proba > 0.5, 1, 0)
 
+#################### モデルの学習 ####################
+
+
+#################### モデルの評価####################
 acc = accuracy_score(converted_y_test, y_pred)
 print(acc)
+#################### モデルの評価####################
