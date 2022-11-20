@@ -94,8 +94,6 @@ print(r_all)
 
 
 #################### モデルの学習 ####################
-
-model = lgb.LGBMClassifier()  # モデルのインスタンスの作成
 xgb_params = {
     'objective': 'binary:logistic',  # 2値分類問題
     'learning_rate': 0.1,            # 学習率
@@ -106,13 +104,13 @@ bst = xgb.train(xgb_params,
                 num_boost_round=100,  # 学習ラウンド数は適当
                 )
 
-y_pred_proba = bst.predict(xgb_test)
-y_pred = np.where(y_pred_proba > 0.5, 1, 0)
-
 #################### モデルの学習 ####################
 
 
 #################### モデルの評価####################
+# テストデータで予測
+y_pred_proba = bst.predict(xgb_test)
+y_pred = np.where(y_pred_proba > 0.5, 1, 0)
 acc = accuracy_score(converted_y_test, y_pred)
 print(acc)
 #################### モデルの評価####################
