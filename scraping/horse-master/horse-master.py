@@ -7,7 +7,7 @@ import time
 f = open("horse-master.csv", "w", encoding="utf_8_sig")
 f.write("name, id, father_name, mother_name, grand_father_name\n")
 
-for index in range(1, 113):
+for index in range(1, 5414):
     if (index == 1):
         req = requests.post("https://db.netkeiba.com/", {
             "sort_key": "prize",
@@ -15,8 +15,7 @@ for index in range(1, 113):
             "pid": "horse_list",
             "list": "100",
             "under_age": "2",
-            "over_age": "none",
-            "act": "1"
+            "over_age": "none"
         })
     else:
         req = requests.post("https://db.netkeiba.com/", {
@@ -26,7 +25,6 @@ for index in range(1, 113):
             "list": "100",
             "under_age": "2",
             "over_age": "none",
-            "act": "1",
             "page": "%s" % index
         })
 
@@ -48,3 +46,4 @@ for index in range(1, 113):
 
     time.sleep(10)
 f.close()
+
